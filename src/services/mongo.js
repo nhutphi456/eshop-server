@@ -1,13 +1,15 @@
 const mongoose = require("mongoose");
 
-const MONGO_URL = process.env.MONGO_URL;
+const keys = require("../config/keys");
+const { database } = keys;
+const databaseUrl = database.url;
 
 mongoose.connection.once("open", () => {
   console.log("MongoDB is ready!");
 });
 
 async function connectMongo() {
-  await mongoose.connect(MONGO_URL);
+  await mongoose.connect(databaseUrl);
 }
 
 module.exports = { connectMongo };

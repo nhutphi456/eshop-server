@@ -1,7 +1,15 @@
-const express = require('express')
-
+const express = require("express");
+const path = require("path");
 const app = express();
 
-app.use(express.json());
+const routes = require("./routes/index");
 
-module.exports = app
+app.use(express.json());
+app.use(
+  "/public/uploads",
+  express.static(path.join(__dirname, "public", "uploads"))
+);
+//routes
+app.use(routes);
+
+module.exports = app;

@@ -1,11 +1,21 @@
 const mongoose = require("mongoose");
+const slug = require("mongoose-slug-generator");
 
+const options = {
+  separator: "-",
+  lang: "en",
+  truncate: 200,
+};
+
+mongoose.plugin(slug, options);
 const productSchema = new mongoose.Schema({
-  productId: {
-    type: String,
-    required: true,
-  },
-  productName: {
+  // productId: {
+  //   type: String,
+  //   required: true,
+  // },
+  sku: { type: String, required: true },
+  slug: { type: String, slug: "sku" },
+  name: {
     type: String,
     required: true,
   },
@@ -20,39 +30,29 @@ const productSchema = new mongoose.Schema({
   },
   price: {
     base: { type: Number, required: true },
-    discount: { type: Number },
+    discount: { type: Number, default: 0 },
   },
-  image: {
+  thumbImage: {
     type: String,
     required: true,
   },
-  images: [
-    {
-      type: String,
-    },
-  ],
   category: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
+    // required: true,
     ref: "Category",
   },
   dateCreated: {
     type: Date,
     default: Date.now(),
   },
-  options: {
-    colors: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
+  dateUpdated: {
+    type: Date,
   },
 });
 
-productSchema.virtual("id").get(function () {
-  return this._id.toHexString();
-});
-productSchema.set("toJSON", { virtuals: true });
+// productSchema.virtual("id").get(function () {
+//   return this._id.toHexString();
+// });
+// productSchema.set("toJSON", { virtuals: true });
 
 module.exports = mongoose.model("Product", productSchema);
