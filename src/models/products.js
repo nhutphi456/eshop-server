@@ -14,7 +14,7 @@ const productSchema = new mongoose.Schema({
   //   required: true,
   // },
   sku: { type: String, required: true },
-  slug: { type: String, slug: "sku" },
+  slug: { type: String, slug: "name" },
   name: {
     type: String,
     required: true,
@@ -35,6 +35,7 @@ const productSchema = new mongoose.Schema({
   thumbImage: {
     type: String,
     required: true,
+    default: ""
   },
   category: {
     type: mongoose.Schema.Types.ObjectId,
@@ -50,9 +51,9 @@ const productSchema = new mongoose.Schema({
   },
 });
 
-// productSchema.virtual("id").get(function () {
-//   return this._id.toHexString();
-// });
-// productSchema.set("toJSON", { virtuals: true });
+productSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
+productSchema.set("toJSON", { virtuals: true });
 
 module.exports = mongoose.model("Product", productSchema);

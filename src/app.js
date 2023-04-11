@@ -1,9 +1,12 @@
 const express = require("express");
+const helmet = require("helmet");
 const path = require("path");
 const app = express();
 
 const routes = require("./routes/index");
 
+app.use(helmet());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
   "/public/uploads",

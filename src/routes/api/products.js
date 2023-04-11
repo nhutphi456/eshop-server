@@ -1,12 +1,34 @@
 const router = require("express").Router();
-const upload = require("../../utils/upload");
 const uploadCloud = require("../../utils/storage");
 
 const Product = require("../../models/products");
 
 router.get("/", async (req, res) => {
-  const products = await Product.find({}, "-__v -_id");
-  return res.status(200).json(products);
+  try {
+    const products = await Product.find({}, "-__v");
+    return res.status(200).json(products);
+  } catch (error) {
+    return res.status(400).json({
+      error: "Your request could not be processed. Please try again",
+    });
+  }
+});
+
+router.get("/item/:slug", async (req, res) => {
+  try {
+    const slug = req.params.slug;
+    const product = await Product.findOne({ slug });
+    if (!product) {
+      return res.status(400).json({
+        error: "Product not found",
+      });
+    }
+    return res.status(200).json(product);
+  } catch (error) {
+    return res.status(400).json({
+      error: "Your request could not be processed. Please try again",
+    });
+  }
 });
 
 router.post("/add", uploadCloud.single("thumbImage"), async (req, res) => {
@@ -30,10 +52,12 @@ router.post("/add", uploadCloud.single("thumbImage"), async (req, res) => {
       return res.status(400).json({ error: "Missing product price" });
     }
 
-    const foundProduct = await Product.findOne({ sku });
+    const foundProduct = await Product.findOne({
+      $or: [{ sku }, { name }],
+    });
     if (foundProduct) {
       return res.status(400).json({
-        error: "The sku has been used",
+        error: "Sku or product name has been used",
       });
     }
 
@@ -55,6 +79,46 @@ router.post("/add", uploadCloud.single("thumbImage"), async (req, res) => {
         product: savedProduct,
       });
     }
+  } catch (error) {
+    return res.status(400).json({
+      error: "Something went wrong. Please try again!",
+    });
+  }
+});
+
+router.put("/:id", uploadCloud.none(), async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const sku = req.body.sku;
+    const name = req.body.name;
+    const description = req.body.description;
+    const quantity = req.body.quantity;
+    const price = req.body.price;
+    const thumbImage = req.body.thumbImage;
+
+    const product = await Product.findByIdAndUpdate(
+      productId,
+      {
+        sku,
+        name,
+        description,
+        quantity,
+        price,
+        thumbImage,
+      },
+      { new: true }
+    );
+    if (!product) {
+      return res.status(400).json({
+        error: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Update product successfully",
+      product: product,
+    });
   } catch (error) {
     return res.status(400).json({
       error: "Something went wrong. Please try again!",
