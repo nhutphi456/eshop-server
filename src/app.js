@@ -12,6 +12,7 @@ app.use(
   "/public/uploads",
   express.static(path.join(__dirname, "public", "uploads"))
 );
+require("./utils/passport")(app);
 //routes
 app.use(routes);
 

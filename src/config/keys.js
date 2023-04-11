@@ -6,6 +6,10 @@ module.exports = {
   database: {
     url: process.env.MONGO_URL
   },
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    tokenExpiresIn: '365d'
+  },
   cloud: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME,
     apiKey: process.env.CLOUDINARY_API_KEY,

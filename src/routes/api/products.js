@@ -1,9 +1,9 @@
 const router = require("express").Router();
 const uploadCloud = require("../../utils/storage");
-
+const auth = require("../../middlewares/auth")
 const Product = require("../../models/products");
 
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
   try {
     const products = await Product.find({}, "-__v");
     return res.status(200).json(products);
