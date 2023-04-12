@@ -35,12 +35,17 @@ const productSchema = new mongoose.Schema({
   thumbImage: {
     type: String,
     required: true,
-    default: ""
+    default: "",
   },
   category: {
     type: mongoose.Schema.Types.ObjectId,
     // required: true,
     ref: "Category",
+  },
+  brand: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "Brand",
   },
   dateCreated: {
     type: Date,
